@@ -12,24 +12,25 @@ import { formatPrice, formatTimeAgo } from '@/lib/utils'
 export default function AdminDomains() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const { data: domains, isLoading, error, refetch } = useAdminDomains()
+  const { data: domainsData, isLoading, error, refetch } = useAdminDomains()
+  const domains = domainsData?.domains || []
 
-  const filteredDomains = domains?.filter(domain => {
-    const matchesSearch = domain.full_name?.toLowerCase().includes(search.toLowerCase()) ||
-                         domain.current_owner?.toLowerCase().includes(search.toLowerCase())
+  const filteredDomains = domains.filter(domain => {
+    const matchesSearch = domain.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+                         domain.owner?.toLowerCase().includes(search.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'listed' && domain.is_listed) ||
-                         (statusFilter === 'unlisted' && !domain.is_listed)
+                         (statusFilter === 'listed' && domain.isForSale) ||
+                         (statusFilter === 'unlisted' && !domain.isForSale)
     
     return matchesSearch && matchesStatus
   }) || []
 
   const stats = {
-    total: domains?.length || 0,
-    listed: domains?.filter(d => d.is_listed).length || 0,
-    unlisted: domains?.filter(d => !d.is_listed).length || 0,
-    totalValue: domains?.reduce((sum, d) => sum + parseFloat(d.purchase_price || '0'), 0) || 0
+    total: domains.length,
+    listed: domains.filter(d => d.isForSale).length,
+    unlisted: domains.filter(d => !d.isForSale).length,
+    totalValue: domains.reduce((sum, d) => sum + parseFloat(d.price || '0'), 0)
   }
 
   if (isLoading) {
@@ -149,28 +150,25 @@ export default function AdminDomains() {
                 <tbody>
                   {filteredDomains.map((domain) => (
                     <tr key={domain.id} className="border-b">
-                      <td className="py-3 font-semibold">{domain.full_name}</td>
+                      <td className="py-3 font-semibold">{domain.fullName}</td>
                       <td className="py-3">
                         <Badge variant="outline">.{domain.extension}</Badge>
                       </td>
                       <td className="py-3">
-                        <div className="font-mono text-sm">{domain.current_owner}</div>
-                        {domain.owner_name && (
-                          <div className="text-xs text-gray-600">{domain.owner_name}</div>
-                        )}
+                        <div className="font-mono text-sm">{domain.owner}</div>
                       </td>
-                      <td className="py-3">{formatPrice(domain.purchase_price)} ETH</td>
+                      <td className="py-3">{formatPrice(domain.price || '0')} ETH</td>
                       <td className="py-3">
-                        <Badge variant={domain.is_listed ? 'default' : 'secondary'}>
-                          {domain.is_listed ? 'For Sale' : 'Held'}
+                        <Badge variant={domain.isForSale ? 'default' : 'secondary'}>
+                          {domain.isForSale ? 'For Sale' : 'Held'}
                         </Badge>
                       </td>
                       <td className="py-3">
-                        {domain.is_listed && domain.list_price ? 
-                          `${formatPrice(domain.list_price)} ETH` : '-'}
+                        {domain.isForSale && domain.price ? 
+                          `${formatPrice(domain.price)} ETH` : '-'}
                       </td>
                       <td className="py-3 text-gray-600">
-                        {formatTimeAgo(domain.minted_at)}
+                        {formatTimeAgo(domain.createdAt)}
                       </td>
                       <td className="py-3">
                         <button className="text-blue-600 hover:underline mr-2">View</button>

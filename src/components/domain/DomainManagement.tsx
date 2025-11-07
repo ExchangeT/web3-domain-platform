@@ -74,7 +74,7 @@ export default function DomainManagement() {
   const [editingResolution, setEditingResolution] = useState(false);
   const [editingTextRecords, setEditingTextRecords] = useState(false);
   const [newResolution, setNewResolution] = useState('');
-  const [textRecords, setTextRecords] = useState<any>({});
+  const [textRecords, setTextRecords] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<'overview' | 'domains' | 'transactions' | 'settings'>('overview');
 
   // Load user domains and transactions
@@ -305,7 +305,7 @@ export default function DomainManagement() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'overview' | 'domains' | 'transactions' | 'settings')}
                 className={`flex items-center space-x-2 pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
@@ -369,7 +369,7 @@ export default function DomainManagement() {
               <CardContent className="text-center py-16">
                 <Globe className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No Domains Found</h3>
-                <p className="text-gray-600 mb-4">You haven't registered any domains yet.</p>
+                <p className="text-gray-600 mb-4">You haven&apos;t registered any domains yet.</p>
                 <Button className="bg-blue-600 hover:bg-blue-700">
                   Register Your First Domain
                 </Button>

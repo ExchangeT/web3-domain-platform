@@ -360,7 +360,7 @@ export function DomainSearch() {
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
                 <Search className="h-5 w-5 mr-2 text-blue-500" />
-                Search Results for "{searchTerm}"
+                Search Results for &quot;{searchTerm}&quot;
               </div>
               {results.length > 0 && (
                 <Badge variant="outline" className="text-sm">
@@ -481,7 +481,7 @@ export function DomainSearch() {
                   Try these suggestions:
                 </h3>
                 <ul className="text-sm text-blue-800 space-y-2">
-                  <li>• Add numbers or words (e.g., "myproject", "project2024")</li>
+                  <li>• Add numbers or words (e.g., &quot;myproject&quot;, &quot;project2024&quot;)</li>
                   <li>• Try different extensions (.web3, .dao, .defi)</li>
                   <li>• Use abbreviations or alternative spellings</li>
                   <li>• Consider related terms or synonyms</li>
@@ -542,7 +542,7 @@ export function DomainSearch() {
 }
 
 // Debounce utility function
-function debounce<T extends (...args: any[]) => any>(
+function debounce<T extends (...args: never[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {

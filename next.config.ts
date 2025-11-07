@@ -1,9 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-  webpack: (config) => {
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  webpack: (config: any) => {
     config.resolve.fallback = {
       fs: false,
       net: false,
@@ -13,12 +11,21 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: [
-      'avatars.githubusercontent.com',
-      'ipfs.io',
-      'gateway.pinata.cloud',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ipfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gateway.pinata.cloud',
+      },
     ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

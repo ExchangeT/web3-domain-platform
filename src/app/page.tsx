@@ -244,7 +244,7 @@ export default function Homepage() {
             </Button>
           </div>
           <p className="text-sm text-gray-500 mt-2">
-            Try: "crypto.web3", "your-name.dao", "project.defi"
+            Try: &quot;crypto.web3&quot;, &quot;your-name.dao&quot;, &quot;project.defi&quot;
           </p>
         </div>
 

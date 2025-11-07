@@ -1,5 +1,5 @@
 import React from 'react';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, useAccount, useConnect, useDisconnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { config } from '../config/wallet-config';
@@ -14,7 +14,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export function WalletProvider({ children }) {
+interface Web3ProviderProps {
+  children: React.ReactNode;
+  targetChainId?: number;
+}
+
+export function WalletProvider({ children }: Web3ProviderProps) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -32,4 +37,28 @@ export function WalletProvider({ children }) {
       </QueryClientProvider>
     </WagmiProvider>
   );
+}
+
+// Default export for convenience
+export default WalletProvider;
+
+// Custom hook to access Web3 functionality
+export function useWeb3() {
+  const { address, isConnected, chain } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  return {
+    account: address,
+    isConnected,
+    isConnecting: isPending,
+    connect: () => {
+      const connector = connectors[0];
+      if (connector) {
+        connect({ connector });
+      }
+    },
+    disconnect,
+    chainId: chain?.id,
+  };
 }

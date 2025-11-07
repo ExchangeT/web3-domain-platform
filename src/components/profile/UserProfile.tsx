@@ -831,7 +831,7 @@ export default function UserProfile({ userAddress }: { userAddress?: string }) {
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Success Rate</span>
                       <span className="font-medium">
-                        {Math.round((stats?.totalSales! / domains.length) * 100)}%
+                        {Math.round(((stats?.totalSales || 0) / domains.length) * 100)}%
                       </span>
                     </div>
                   </div>

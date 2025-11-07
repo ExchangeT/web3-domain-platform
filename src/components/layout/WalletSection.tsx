@@ -72,8 +72,8 @@ export default function WalletSection() {
       }
       
       // If WalletConnect provider is available
-      if ((window as any).walletConnect?.provider) {
-        return await (window as any).walletConnect.provider.request({
+      if (window.walletConnect?.provider) {
+        return await window.walletConnect.provider.request({
           method: 'personal_sign',
           params: [message, address]
         })

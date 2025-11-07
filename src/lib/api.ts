@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosInstance } from 'axios'
 
 // Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   message?: string
@@ -257,7 +257,7 @@ export const apiClient = {
           }
         })
       }
-      return api.get<ApiResponse<{ tickets: any[]; pagination: PaginationResponse }>>(`/api/admin/support?${searchParams}`)
+      return api.get<ApiResponse<{ tickets: Record<string, unknown>[]; pagination: PaginationResponse }>>(`/api/admin/support?${searchParams}`)
     },
     
     updateUserStatus: (userId: string, status: 'active' | 'suspended') =>

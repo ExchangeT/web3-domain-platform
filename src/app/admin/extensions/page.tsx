@@ -17,7 +17,7 @@ export default function AdminExtensions() {
     total: extensions?.length || 0,
     enabled: extensions?.filter(ext => ext.is_enabled).length || 0,
     disabled: extensions?.filter(ext => !ext.is_enabled).length || 0,
-    totalDomains: extensions?.reduce((sum, ext) => sum + (ext.total_domains || 0), 0) || 0,
+    totalDomains: extensions?.reduce((sum, ext) => sum + (ext.total_domains_minted || 0), 0) || 0,
     totalRevenue: extensions?.reduce((sum, ext) => sum + parseFloat(ext.total_revenue || '0'), 0) || 0
   }
 
@@ -131,7 +131,7 @@ export default function AdminExtensions() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Domains:</span>
-                    <span className="font-medium">{ext.total_domains || 0}</span>
+                    <span className="font-medium">{ext.total_domains_minted || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Revenue:</span>
@@ -201,7 +201,7 @@ export default function AdminExtensions() {
                           {ext.is_enabled ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </td>
-                      <td className="py-3">{ext.total_domains || 0}</td>
+                      <td className="py-3">{ext.total_domains_minted || 0}</td>
                       <td className="py-3 text-green-600">
                         {formatPrice(ext.total_revenue || '0')} ETH
                       </td>

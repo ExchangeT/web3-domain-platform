@@ -2,15 +2,20 @@
 declare global {
   interface Window {
     ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>
+      request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
       isMetaMask?: boolean
       isConnected?: () => boolean
-      on?: (event: string, callback: (...args: any[]) => void) => void
-      removeListener?: (event: string, callback: (...args: any[]) => void) => void
+      on?: (event: string, callback: (...args: unknown[]) => void) => void
+      removeListener?: (event: string, callback: (...args: unknown[]) => void) => void
     }
     web3?: {
       currentProvider?: {
-        request: (args: { method: string; params?: any[] }) => Promise<any>
+        request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
+      }
+    }
+    walletConnect?: {
+      provider?: {
+        request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
       }
     }
   }

@@ -433,7 +433,7 @@ export default function DomainMarketplace() {
 
               <Select
                 value={filters.sortBy}
-                onValueChange={(value) => setFilters(prev => ({ ...prev, sortBy: value as any }))}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, sortBy: value as 'price_asc' | 'price_desc' | 'newest' | 'oldest' | 'popular' | 'length' }))}
               >
                 <SelectTrigger className="w-36">
                   <SelectValue placeholder="Sort by" />

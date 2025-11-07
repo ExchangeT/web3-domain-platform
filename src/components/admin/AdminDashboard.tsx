@@ -150,7 +150,7 @@ export default function AdminDashboard() {
           <CardContent className="text-center py-16">
             <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-600 mb-4">You don't have admin permissions</p>
+            <p className="text-gray-600 mb-4">You don&apos;t have admin permissions</p>
             {user && (
               <div className="bg-gray-50 border rounded-lg p-4 mb-4">
                 <div className="flex items-center justify-center space-x-4 text-sm">

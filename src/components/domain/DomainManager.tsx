@@ -177,7 +177,7 @@ export default function DomainManagement({ userAddress }: DomainManagementProps)
               No domains found
             </h3>
             <p className="text-gray-600">
-              You haven't registered any domains yet. Start by searching for your perfect domain!
+              You haven&apos;t registered any domains yet. Start by searching for your perfect domain!
             </p>
           </CardContent>
         </Card>

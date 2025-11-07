@@ -30,7 +30,7 @@ export function NetworkStatus() {
             <div>
               <h3 className="text-red-800 font-medium">Wrong Network</h3>
               <p className="text-red-600 text-sm">
-                You're on {getNetworkName(chainId)}. Please switch to {getNetworkName(targetChainId)}.
+                You&apos;re on {getNetworkName(chainId)}. Please switch to {getNetworkName(targetChainId)}.
               </p>
             </div>
           </div>
