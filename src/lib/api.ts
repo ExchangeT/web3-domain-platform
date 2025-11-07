@@ -26,11 +26,19 @@ export interface User {
 }
 
 export interface Extension {
-  id: string
-  name: string
-  price: string
-  isActive: boolean
-  description?: string
+  id: number;
+  name: string;
+  base_price: string;           // Backend uses "base_price"
+  tier_pricing: object;
+  is_enabled: boolean;          // Backend uses "is_enabled"
+  contract_address: string;
+  created_by: string;
+  total_domains_minted: number;
+  total_revenue: string;
+  description: string;
+  icon_url: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DomainSearchResult {
