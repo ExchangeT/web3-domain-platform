@@ -13,27 +13,29 @@ export default function AdminTransactions() {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
-  const { data: transactions, isLoading, error, refetch } = useAdminTransactions()
+  const { data, isLoading, error, refetch } = useAdminTransactions()
 
-  const filteredTransactions = transactions?.filter(tx => {
-    const matchesSearch = tx.tx_hash?.toLowerCase().includes(search.toLowerCase()) ||
-                         tx.domain_name?.toLowerCase().includes(search.toLowerCase()) ||
-                         tx.from_address?.toLowerCase().includes(search.toLowerCase()) ||
-                         tx.to_address?.toLowerCase().includes(search.toLowerCase())
-    
-    const matchesType = typeFilter === 'all' || tx.tx_type === typeFilter
+  const transactions = data?.transactions || []
+
+  const filteredTransactions = transactions.filter(tx => {
+    const matchesSearch = tx.txHash?.toLowerCase().includes(search.toLowerCase()) ||
+                         tx.domainName?.toLowerCase().includes(search.toLowerCase()) ||
+                         tx.from?.toLowerCase().includes(search.toLowerCase()) ||
+                         tx.to?.toLowerCase().includes(search.toLowerCase())
+
+    const matchesType = typeFilter === 'all' || tx.type === typeFilter
     const matchesStatus = statusFilter === 'all' || tx.status === statusFilter
-    
+
     return matchesSearch && matchesType && matchesStatus
-  }) || []
+  })
 
   const stats = {
-    total: transactions?.length || 0,
-    confirmed: transactions?.filter(tx => tx.status === 'confirmed').length || 0,
-    pending: transactions?.filter(tx => tx.status === 'pending').length || 0,
-    failed: transactions?.filter(tx => tx.status === 'failed').length || 0,
-    totalVolume: transactions?.filter(tx => tx.status === 'confirmed')
-      .reduce((sum, tx) => sum + parseFloat(tx.amount || '0'), 0) || 0
+    total: transactions.length,
+    confirmed: transactions.filter(tx => tx.status === 'confirmed').length,
+    pending: transactions.filter(tx => tx.status === 'pending').length,
+    failed: transactions.filter(tx => tx.status === 'failed').length,
+    totalVolume: transactions.filter(tx => tx.status === 'confirmed')
+      .reduce((sum, tx) => sum + parseFloat(tx.price || '0'), 0)
   }
 
   if (isLoading) {
@@ -176,26 +178,26 @@ export default function AdminTransactions() {
                     <tr key={tx.id} className="border-b">
                       <td className="py-3 font-mono text-sm">
                         <a
-                          href={`https://etherscan.io/tx/${tx.tx_hash}`}
+                          href={`https://etherscan.io/tx/${tx.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
                         >
-                          {tx.tx_hash?.slice(0, 10)}...{tx.tx_hash?.slice(-8)}
+                          {tx.txHash?.slice(0, 10)}...{tx.txHash?.slice(-8)}
                         </a>
                       </td>
                       <td className="py-3">
-                        <Badge variant="outline">{tx.tx_type}</Badge>
+                        <Badge variant="outline">{tx.type}</Badge>
                       </td>
-                      <td className="py-3 font-medium">{tx.domain_name || '-'}</td>
+                      <td className="py-3 font-medium">{tx.domainName || '-'}</td>
                       <td className="py-3 font-mono text-sm">
-                        {tx.from_address?.slice(0, 6)}...{tx.from_address?.slice(-4)}
+                        {tx.from?.slice(0, 6)}...{tx.from?.slice(-4)}
                       </td>
                       <td className="py-3 font-mono text-sm">
-                        {tx.to_address?.slice(0, 6)}...{tx.to_address?.slice(-4)}
+                        {tx.to?.slice(0, 6)}...{tx.to?.slice(-4)}
                       </td>
-                      <td className="py-3">{formatPrice(tx.amount)} ETH</td>
-                      <td className="py-3">{formatPrice(tx.gas_fee || '0')} ETH</td>
+                      <td className="py-3">{formatPrice(tx.price || '0')} ETH</td>
+                      <td className="py-3">-</td>
                       <td className="py-3">
                         <Badge variant={
                           tx.status === 'confirmed' ? 'default' :
@@ -205,7 +207,7 @@ export default function AdminTransactions() {
                         </Badge>
                       </td>
                       <td className="py-3 text-gray-600">
-                        {formatTimeAgo(tx.created_at)}
+                        {formatTimeAgo(tx.createdAt)}
                       </td>
                       <td className="py-3">
                         <button className="text-blue-600 hover:underline mr-2">View</button>

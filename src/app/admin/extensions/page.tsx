@@ -15,10 +15,11 @@ export default function AdminExtensions() {
 
   const stats = {
     total: extensions?.length || 0,
-    enabled: extensions?.filter(ext => ext.is_enabled).length || 0,
-    disabled: extensions?.filter(ext => !ext.is_enabled).length || 0,
-    totalDomains: extensions?.reduce((sum, ext) => sum + (ext.total_domains || 0), 0) || 0,
-    totalRevenue: extensions?.reduce((sum, ext) => sum + parseFloat(ext.total_revenue || '0'), 0) || 0
+    enabled: extensions?.filter(ext => ext.isActive).length || 0,
+    disabled: extensions?.filter(ext => !ext.isActive).length || 0,
+    avgPrice: extensions && extensions.length > 0
+      ? extensions.reduce((sum, ext) => sum + parseFloat(ext.price), 0) / extensions.length
+      : 0
   }
 
   if (isLoading) {
@@ -54,7 +55,7 @@ export default function AdminExtensions() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
@@ -75,16 +76,10 @@ export default function AdminExtensions() {
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-purple-600">{stats.totalDomains}</div>
-              <div className="text-gray-600">Total Domains</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-orange-600">
-                {formatPrice(stats.totalRevenue.toString())} ETH
+                {formatPrice(stats.avgPrice.toString())}
               </div>
-              <div className="text-gray-600">Total Revenue</div>
+              <div className="text-gray-600">Avg Price</div>
             </CardContent>
           </Card>
         </div>
@@ -118,47 +113,33 @@ export default function AdminExtensions() {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg">.{ext.name}</CardTitle>
-                  <Badge variant={ext.is_enabled ? 'default' : 'secondary'}>
-                    {ext.is_enabled ? 'Enabled' : 'Disabled'}
+                  <Badge variant={ext.isActive ? 'default' : 'secondary'}>
+                    {ext.isActive ? 'Enabled' : 'Disabled'}
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Base Price:</span>
-                    <span className="font-medium">{formatPrice(ext.base_price)} ETH</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Domains:</span>
-                    <span className="font-medium">{ext.total_domains || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Revenue:</span>
-                    <span className="font-medium text-green-600">
-                      {formatPrice(ext.total_revenue || '0')} ETH
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Created:</span>
-                    <span className="text-sm">{formatTimeAgo(ext.created_at)}</span>
+                    <span className="text-sm text-gray-600">Price:</span>
+                    <span className="font-medium">{formatPrice(ext.price)}</span>
                   </div>
                   {ext.description && (
                     <div>
-                      <span className="text-sm text-gray-600">Description:</span>
-                      <p className="text-sm mt-1">{ext.description}</p>
+                      <span className="text-sm text-gray-600 block mb-1">Description:</span>
+                      <p className="text-sm text-gray-700">{ext.description}</p>
                     </div>
                   )}
                   <div className="flex gap-2 mt-4">
                     <Button variant="outline" size="sm" className="flex-1">
                       Edit
                     </Button>
-                    <Button 
-                      variant={ext.is_enabled ? "destructive" : "default"} 
-                      size="sm" 
+                    <Button
+                      variant={ext.isActive ? "destructive" : "default"}
+                      size="sm"
                       className="flex-1"
                     >
-                      {ext.is_enabled ? 'Disable' : 'Enable'}
+                      {ext.isActive ? 'Disable' : 'Enable'}
                     </Button>
                   </div>
                 </div>
@@ -178,11 +159,8 @@ export default function AdminExtensions() {
                 <thead>
                   <tr className="border-b">
                     <th className="text-left py-2">Extension</th>
-                    <th className="text-left py-2">Base Price</th>
+                    <th className="text-left py-2">Price</th>
                     <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2">Total Domains</th>
-                    <th className="text-left py-2">Revenue</th>
-                    <th className="text-left py-2">Created</th>
                     <th className="text-left py-2">Actions</th>
                   </tr>
                 </thead>
@@ -195,28 +173,22 @@ export default function AdminExtensions() {
                           <div className="text-sm text-gray-600">{ext.description}</div>
                         )}
                       </td>
-                      <td className="py-3">{formatPrice(ext.base_price)} ETH</td>
+                      <td className="py-3">{formatPrice(ext.price)}</td>
                       <td className="py-3">
-                        <Badge variant={ext.is_enabled ? 'default' : 'secondary'}>
-                          {ext.is_enabled ? 'Enabled' : 'Disabled'}
+                        <Badge variant={ext.isActive ? 'default' : 'secondary'}>
+                          {ext.isActive ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </td>
-                      <td className="py-3">{ext.total_domains || 0}</td>
-                      <td className="py-3 text-green-600">
-                        {formatPrice(ext.total_revenue || '0')} ETH
-                      </td>
-                      <td className="py-3 text-gray-600">{formatTimeAgo(ext.created_at)}</td>
                       <td className="py-3">
                         <button className="text-blue-600 hover:underline mr-2">Edit</button>
-                        <button className="text-orange-600 hover:underline mr-2">Settings</button>
-                        <button className={`hover:underline ${ext.is_enabled ? 'text-red-600' : 'text-green-600'}`}>
-                          {ext.is_enabled ? 'Disable' : 'Enable'}
+                        <button className={`hover:underline ${ext.isActive ? 'text-red-600' : 'text-green-600'}`}>
+                          {ext.isActive ? 'Disable' : 'Enable'}
                         </button>
                       </td>
                     </tr>
                   )) || (
                     <tr>
-                      <td colSpan={7} className="text-center py-8 text-gray-500">
+                      <td colSpan={4} className="text-center py-8 text-gray-500">
                         No extensions found
                       </td>
                     </tr>
