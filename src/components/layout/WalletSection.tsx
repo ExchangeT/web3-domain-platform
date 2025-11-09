@@ -192,11 +192,8 @@ export default function WalletSection() {
         <User className="h-4 w-4 text-gray-600" />
         <div className="text-sm">
           <div className="font-medium">
-            {user?.name || `${address?.slice(0, 6)}...${address?.slice(-4)}`}
+            {user?.username || `${address?.slice(0, 6)}...${address?.slice(-4)}`}
           </div>
-          {user?.role && (
-            <div className="text-xs text-gray-500 capitalize">{user.role}</div>
-          )}
         </div>
       </div>
       <Button variant="ghost" size="icon" onClick={handleLogout}>

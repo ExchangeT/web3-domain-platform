@@ -19,11 +19,10 @@ export default function MyDomainsPage() {
     name: string;
     extension: string;
     fullName: string;
-    currentOwner: string;
-    purchasePrice: string;
-    mintedAt: string;
-    isListed: boolean;
-    currentListPrice?: string;
+    owner: string;
+    price?: string;
+    createdAt: string;
+    isForSale: boolean;
   } | null>(null)
   const [resolveAddress, setResolveAddress] = useState('')
   
@@ -36,6 +35,7 @@ export default function MyDomainsPage() {
           <CardContent className="p-8 text-center">
             <h2 className="text-xl font-semibold mb-2">Connect Your Wallet</h2>
             <p className="text-gray-600 mb-4">Please connect your wallet to view your domains</p>
+            {/* @ts-expect-error - Web3Modal custom element */}
             <w3m-button />
           </CardContent>
         </Card>
@@ -75,7 +75,7 @@ export default function MyDomainsPage() {
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-green-600">
-                {domains.filter(d => d.isListed).length}
+                {domains.filter(d => d.isForSale).length}
               </div>
               <div className="text-gray-600">Listed for Sale</div>
             </CardContent>
@@ -85,8 +85,8 @@ export default function MyDomainsPage() {
               <div className="text-2xl font-bold text-purple-600">
                 {formatPrice(
                   domains
-                    .filter(d => d.isListed)
-                    .reduce((sum, d) => sum + parseFloat(d.currentListPrice || '0'), 0)
+                    .filter(d => d.isForSale)
+                    .reduce((sum, d) => sum + parseFloat(d.price || '0'), 0)
                     .toString()
                 )} ETH
               </div>
@@ -97,7 +97,7 @@ export default function MyDomainsPage() {
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-orange-600">
                 {formatPrice(
-                  domains.reduce((sum, d) => sum + parseFloat(d.purchasePrice || '0'), 0).toString()
+                  domains.reduce((sum, d) => sum + parseFloat(d.price || '0'), 0).toString()
                 )} ETH
               </div>
               <div className="text-gray-600">Total Invested</div>
@@ -128,26 +128,20 @@ export default function MyDomainsPage() {
                       <h3 className="text-xl font-semibold">{domain.fullName}</h3>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant="outline">.{domain.extension}</Badge>
-                        {domain.isListed && <Badge variant="success">For Sale</Badge>}
-                        {domain.resolvedAddress && <Badge variant="secondary">Resolved</Badge>}
+                        {domain.isForSale && <Badge variant="success">For Sale</Badge>}
                       </div>
                       <div className="text-sm text-gray-600 mt-2">
-                        Registered {formatTimeAgo(domain.mintedAt)} • 
-                        Paid {formatPrice(domain.purchasePrice || '0')} ETH
+                        Registered {formatTimeAgo(domain.createdAt)} • 
+                        Paid {formatPrice(domain.price || '0')} ETH
                       </div>
-                      {domain.resolvedAddress && (
-                        <div className="text-sm text-gray-600">
-                          Points to {formatAddress(domain.resolvedAddress)}
-                        </div>
-                      )}
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-3">
-                    {domain.isListed && (
+                    {domain.isForSale && (
                       <div className="text-right">
                         <div className="text-lg font-bold text-green-600">
-                          {formatPrice(domain.currentListPrice || '0')} ETH
+                          {formatPrice(domain.price || '0')} ETH
                         </div>
                         <div className="text-sm text-gray-600">Listed Price</div>
                       </div>
@@ -228,7 +222,7 @@ export default function MyDomainsPage() {
                   Cancel
                 </Button>
                 <Button 
-                  onClick={() => handleCopyAddress(selectedDomain.currentOwner)}
+                  onClick={() => handleCopyAddress(selectedDomain.owner)}
                   className="flex-1"
                 >
                   <Copy className="h-4 w-4 mr-2" />

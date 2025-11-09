@@ -1,4 +1,4 @@
-// Extend the Window interface to include ethereum and web3 properties
+// Extend the Window interface and declare custom elements
 declare global {
   interface Window {
     ethereum?: {
@@ -14,10 +14,7 @@ declare global {
       }
     }
   }
-}
 
-// Declare the w3m-button custom element
-declare global {
   namespace JSX {
     interface IntrinsicElements {
       'w3m-button': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>

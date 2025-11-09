@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState('7d');
-  const [newExtension, setNewExtension] = useState({ name: '', price: '', beneficiary: '' });
+  const [newExtension, setNewExtension] = useState({ name: '', price: '', description: '' });
 
   // Admin data queries using your existing hooks
   const { data: dashboardData, isLoading: loadingDashboard } = useAdminDashboard();
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
   const createExtensionMutation = useCreateExtension();
 
   // Check if user has admin role
-  const isAdmin = user?.role && ['super_admin', 'admin'].includes(user.role);
+  const isAdmin = false; // TODO: Add role to User interface
 
   const handleUserAction = async (userId: string, status: 'active' | 'suspended') => {
     try {
@@ -90,13 +90,11 @@ export default function AdminDashboard() {
       await createExtensionMutation.mutateAsync({
         name: newExtension.name,
         price: newExtension.price,
-        beneficiary: newExtension.beneficiary,
         isActive: true,
-        totalRegistrations: 0,
-        revenue: '0'
+        description: newExtension.description || undefined
       });
-      
-      setNewExtension({ name: '', price: '', beneficiary: '' });
+
+      setNewExtension({ name: '', price: '', description: '' });
       toast.success('Extension added successfully');
     } catch (error) {
       toast.error('Failed to add extension');
@@ -154,8 +152,8 @@ export default function AdminDashboard() {
             {user && (
               <div className="bg-gray-50 border rounded-lg p-4 mb-4">
                 <div className="flex items-center justify-center space-x-4 text-sm">
-                  <span className="font-mono">{formatAddress(user.wallet_address || '')}</span>
-                  <Badge variant="outline">{user.role}</Badge>
+                  <span className="font-mono">{formatAddress(user.walletAddress || '')}</span>
+                  <Badge variant="outline">User</Badge>
                 </div>
               </div>
             )}
@@ -181,16 +179,22 @@ export default function AdminDashboard() {
   const stats = dashboardData || {
     totalUsers: 0,
     totalDomains: 0,
+    totalTransactions: 0,
     totalRevenue: '0',
-    monthlyActiveUsers: 0,
-    domainsRegisteredToday: 0,
-    averagePrice: '0',
-    topExtension: '.web3',
-    conversionRate: 0
+    recentTransactions: [],
+    domainStats: {
+      totalMinted: 0,
+      totalForSale: 0,
+      totalSold: 0
+    },
+    userStats: {
+      newUsersToday: 0,
+      activeUsers: 0
+    }
   };
 
-  const users = usersData || [];
-  const transactions = transactionsData || [];
+  const users = usersData?.users || [];
+  const transactions = transactionsData?.transactions || [];
   const extensions = extensionsData || [];
 
   return (
@@ -201,7 +205,7 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
           <p className="text-gray-600 mt-1">Platform management and analytics</p>
           <p className="text-sm text-blue-600">
-            Welcome, {user?.role} - {formatAddress(user?.wallet_address || '')}
+            Welcome, Admin - {formatAddress(user?.walletAddress || '')}
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -235,7 +239,7 @@ export default function AdminDashboard() {
                   {stats.totalUsers?.toLocaleString() || '0'}
                 </p>
                 <p className="text-xs text-green-600">
-                  +{stats.monthlyActiveUsers || 0} active
+                  +{stats.userStats?.activeUsers || 0} active
                 </p>
               </div>
             </div>
@@ -252,7 +256,7 @@ export default function AdminDashboard() {
                   {stats.totalDomains?.toLocaleString() || '0'}
                 </p>
                 <p className="text-xs text-green-600">
-                  +{stats.domainsRegisteredToday || 0} today
+                  +{stats.userStats?.newUsersToday || 0} new today
                 </p>
               </div>
             </div>
@@ -266,7 +270,7 @@ export default function AdminDashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.totalRevenue} ETH</p>
-                <p className="text-xs text-blue-600">Avg: {stats.averagePrice} ETH</p>
+                <p className="text-xs text-blue-600">From {stats.domainStats?.totalSold || 0} sales</p>
               </div>
             </div>
           </CardContent>
@@ -277,9 +281,9 @@ export default function AdminDashboard() {
             <div className="flex items-center">
               <TrendingUp className="h-8 w-8 text-orange-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.conversionRate}%</p>
-                <p className="text-xs text-gray-600">Top: {stats.topExtension}</p>
+                <p className="text-sm font-medium text-gray-600">Total Transactions</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalTransactions?.toLocaleString() || '0'}</p>
+                <p className="text-xs text-gray-600">{stats.domainStats?.totalMinted || 0} domains minted</p>
               </div>
             </div>
           </CardContent>
@@ -504,11 +508,11 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Beneficiary Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
                   <Input
-                    placeholder="0x..."
-                    value={newExtension.beneficiary}
-                    onChange={(e) => setNewExtension(prev => ({ ...prev, beneficiary: e.target.value }))}
+                    placeholder="Description of the extension"
+                    value={newExtension.description}
+                    onChange={(e) => setNewExtension(prev => ({ ...prev, description: e.target.value }))}
                   />
                 </div>
                 <div className="flex items-end">
