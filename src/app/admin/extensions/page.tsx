@@ -15,10 +15,10 @@ export default function AdminExtensions() {
 
   const stats = {
     total: extensions?.length || 0,
-    enabled: extensions?.filter(ext => ext.isActive).length || 0,
-    disabled: extensions?.filter(ext => !ext.isActive).length || 0,
+    enabled: extensions?.filter(ext => ext.is_enabled).length || 0,
+    disabled: extensions?.filter(ext => !ext.is_enabled).length || 0,
     avgPrice: extensions && extensions.length > 0
-      ? extensions.reduce((sum, ext) => sum + parseFloat(ext.price), 0) / extensions.length
+      ? extensions.reduce((sum, ext) => sum + parseFloat(ext.base_price), 0) / extensions.length
       : 0
   }
 
@@ -113,8 +113,8 @@ export default function AdminExtensions() {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg">.{ext.name}</CardTitle>
-                  <Badge variant={ext.isActive ? 'default' : 'secondary'}>
-                    {ext.isActive ? 'Enabled' : 'Disabled'}
+                  <Badge variant={ext.is_enabled ? 'default' : 'secondary'}>
+                    {ext.is_enabled ? 'Enabled' : 'Disabled'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -122,7 +122,7 @@ export default function AdminExtensions() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Price:</span>
-                    <span className="font-medium">{formatPrice(ext.price)}</span>
+                    <span className="font-medium">{formatPrice(ext.base_price)}</span>
                   </div>
                   {ext.description && (
                     <div>
@@ -135,11 +135,11 @@ export default function AdminExtensions() {
                       Edit
                     </Button>
                     <Button
-                      variant={ext.isActive ? "destructive" : "default"}
+                      variant={ext.is_enabled ? "destructive" : "default"}
                       size="sm"
                       className="flex-1"
                     >
-                      {ext.isActive ? 'Disable' : 'Enable'}
+                      {ext.is_enabled ? 'Disable' : 'Enable'}
                     </Button>
                   </div>
                 </div>
@@ -173,16 +173,16 @@ export default function AdminExtensions() {
                           <div className="text-sm text-gray-600">{ext.description}</div>
                         )}
                       </td>
-                      <td className="py-3">{formatPrice(ext.price)}</td>
+                      <td className="py-3">{formatPrice(ext.base_price)}</td>
                       <td className="py-3">
-                        <Badge variant={ext.isActive ? 'default' : 'secondary'}>
-                          {ext.isActive ? 'Enabled' : 'Disabled'}
+                        <Badge variant={ext.is_enabled ? 'default' : 'secondary'}>
+                          {ext.is_enabled ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </td>
                       <td className="py-3">
                         <button className="text-blue-600 hover:underline mr-2">Edit</button>
-                        <button className={`hover:underline ${ext.isActive ? 'text-red-600' : 'text-green-600'}`}>
-                          {ext.isActive ? 'Disable' : 'Enable'}
+                        <button className={`hover:underline ${ext.is_enabled ? 'text-red-600' : 'text-green-600'}`}>
+                          {ext.is_enabled ? 'Disable' : 'Enable'}
                         </button>
                       </td>
                     </tr>

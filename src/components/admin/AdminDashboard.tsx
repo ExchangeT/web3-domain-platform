@@ -89,9 +89,9 @@ export default function AdminDashboard() {
     try {
       await createExtensionMutation.mutateAsync({
         name: newExtension.name,
-        price: newExtension.price,
-        isActive: true,
-        description: newExtension.description || undefined
+        base_price: newExtension.price,
+        is_enabled: true,
+        description: newExtension.description || ''
       });
 
       setNewExtension({ name: '', price: '', description: '' });
@@ -555,12 +555,12 @@ export default function AdminDashboard() {
                     {extensions.map((ext) => (
                       <TableRow key={ext.name}>
                         <TableCell className="font-medium">.{ext.name}</TableCell>
-                        <TableCell>{ext.price} ETH</TableCell>
-                        <TableCell>{ext.totalRegistrations?.toLocaleString()}</TableCell>
-                        <TableCell>{ext.revenue} ETH</TableCell>
+                        <TableCell>{ext.base_price} ETH</TableCell>
+                        <TableCell>{ext.total_domains_minted?.toLocaleString()}</TableCell>
+                        <TableCell>{ext.total_revenue} ETH</TableCell>
                         <TableCell>
-                          <Badge variant={ext.isActive ? 'default' : 'secondary'}>
-                            {ext.isActive ? 'Active' : 'Inactive'}
+                          <Badge variant={ext.is_enabled ? 'default' : 'secondary'}>
+                            {ext.is_enabled ? 'Active' : 'Inactive'}
                           </Badge>
                         </TableCell>
                         <TableCell>
