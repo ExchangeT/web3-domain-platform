@@ -28,8 +28,6 @@ export default function AdminDashboard() {
     )
   }
 
-  const { overview } = data || {}
-
   return (
     <AdminLayout userRole="super_admin">
       <div className="space-y-6">
@@ -37,7 +35,7 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Platform overview and statistics</p>
         </div>
-        
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
@@ -46,8 +44,10 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{overview?.total_users || 0}</div>
-              <p className="text-xs text-muted-foreground">Real data from database</p>
+              <div className="text-2xl font-bold">{data?.totalUsers || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                +{data?.userStats?.newUsersToday || 0} today
+              </p>
             </CardContent>
           </Card>
 
@@ -57,30 +57,32 @@ export default function AdminDashboard() {
               <Globe className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{overview?.total_domains || 0}</div>
-              <p className="text-xs text-muted-foreground">Real data from database</p>
+              <div className="text-2xl font-bold">{data?.totalDomains || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {data?.domainStats?.totalForSale || 0} for sale
+              </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Listed Domains</CardTitle>
+              <CardTitle className="text-sm font-medium">Transactions</CardTitle>
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{overview?.listed_domains || 0}</div>
-              <p className="text-xs text-muted-foreground">Coming soon</p>
+              <div className="text-2xl font-bold">{data?.totalTransactions || 0}</div>
+              <p className="text-xs text-muted-foreground">Total transactions</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Volume</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{overview?.total_volume || 0} ETH</div>
-              <p className="text-xs text-muted-foreground">Coming soon</p>
+              <div className="text-2xl font-bold">{data?.totalRevenue || '0'} ETH</div>
+              <p className="text-xs text-muted-foreground">All time volume</p>
             </CardContent>
           </Card>
         </div>

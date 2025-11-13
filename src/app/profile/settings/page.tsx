@@ -28,6 +28,7 @@ export default function SettingsPage() {
           <CardContent className="p-8 text-center">
             <h2 className="text-xl font-semibold mb-2">Connect Your Wallet</h2>
             <p className="text-gray-600 mb-4">Please connect your wallet to access settings</p>
+            {/* @ts-expect-error - Web3Modal custom element */}
             <w3m-button />
           </CardContent>
         </Card>
@@ -55,7 +56,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Display Name</label>
-                <Input defaultValue={user?.name || ''} placeholder="Your display name" />
+                <Input defaultValue={user?.username || ''} placeholder="Your display name" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>

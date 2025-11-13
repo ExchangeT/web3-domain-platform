@@ -106,8 +106,8 @@ export default function UserDetailsPage() {
                   <div><span className="text-gray-600">Total Domains:</span> {domains?.length || 0}</div>
                   <div><span className="text-gray-600">Total Transactions:</span> {transactions?.length || 0}</div>
                   <div><span className="text-gray-600">Total Sessions:</span> {recentSessions?.length || 0}</div>
-                  <div><span className="text-gray-600">Open Orders:</span> {marketplaceOrders?.filter(o => o.status === 'active').length || 0}</div>
-                  <div><span className="text-gray-600">Closed Orders:</span> {marketplaceOrders?.filter(o => o.status === 'completed').length || 0}</div>
+                  <div><span className="text-gray-600">Open Orders:</span> {marketplaceOrders?.filter((o: any) => o.status === 'active').length || 0}</div>
+                  <div><span className="text-gray-600">Closed Orders:</span> {marketplaceOrders?.filter((o: any) => o.status === 'completed').length || 0}</div>
                 </div>
               </div>
             </div>
@@ -162,11 +162,11 @@ export default function UserDetailsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {domains?.map((domain) => (
+                    {domains?.map((domain: any) => (
                       <tr key={domain.id} className="border-b">
-                        <td className="py-3 font-medium">{domain.full_name}</td>
+                        <td className="py-3 font-medium">{domain.fullName || domain.full_name}</td>
                         <td className="py-3">{domain.extension}</td>
-                        <td className="py-3">{domain.purchase_price} ETH</td>
+                        <td className="py-3">{domain.price || domain.purchase_price} ETH</td>
                         <td className="py-3">
                           <Badge variant={domain.is_listed ? 'default' : 'secondary'}>
                             {domain.is_listed ? 'Yes' : 'No'}
@@ -208,7 +208,7 @@ export default function UserDetailsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions?.map((tx) => (
+                    {transactions?.map((tx: any) => (
                       <tr key={tx.id} className="border-b">
                         <td className="py-3 font-mono text-sm">
                           {tx.tx_hash?.slice(0, 10)}...{tx.tx_hash?.slice(-8)}
@@ -258,7 +258,7 @@ export default function UserDetailsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {recentSessions?.map((session) => (
+                    {recentSessions?.map((session: any) => (
                       <tr key={session.id} className="border-b">
                         <td className="py-3">{new Date(session.created_at).toLocaleString()}</td>
                         <td className="py-3 font-mono text-sm">{session.ip_address}</td>
@@ -328,19 +328,19 @@ export default function UserDetailsPage() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Account Age:</span>
-                      <span>{user?.joined_at ? Math.floor((new Date() - new Date(user.joined_at)) / (1000 * 60 * 60 * 24)) : 0} days</span>
+                      <span>{user?.joined_at ? Math.floor((new Date().getTime() - new Date(user.joined_at).getTime()) / (1000 * 60 * 60 * 24)) : 0} days</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Total Spent:</span>
-                      <span>{domains?.reduce((sum, d) => sum + parseFloat(d.purchase_price || '0'), 0).toFixed(3)} ETH</span>
+                      <span>{domains?.reduce((sum: number, d: any) => sum + parseFloat(d.purchase_price || d.price || '0'), 0).toFixed(3)} ETH</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Total Earned:</span>
-                      <span>{transactions?.filter(t => t.tx_type === 'sale').reduce((sum, t) => sum + parseFloat(t.amount || '0'), 0).toFixed(3)} ETH</span>
+                      <span>{transactions?.filter((t: any) => t.tx_type === 'sale' || t.type === 'sale').reduce((sum: number, t: any) => sum + parseFloat(t.amount || t.price || '0'), 0).toFixed(3)} ETH</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Success Rate:</span>
-                      <span>{transactions?.length ? Math.round((transactions.filter(t => t.status === 'confirmed').length / transactions.length) * 100) : 0}%</span>
+                      <span>{transactions?.length ? Math.round((transactions.filter((t: any) => t.status === 'confirmed').length / transactions.length) * 100) : 0}%</span>
                     </div>
                   </div>
                 </div>

@@ -13,14 +13,18 @@ import { formatTimeAgo } from '@/lib/utils'
 export default function AdminUsers() {
   const [search, setSearch] = useState('')
   const router = useRouter()
-  const { data: users, isLoading, error, refetch } = useAdminUsers()
+  const { data, isLoading, error, refetch } = useAdminUsers()
   const updateUserStatus = useUpdateUserStatus()
 
-  const filteredUsers = users?.filter(user => 
+  const users = data?.users || []
+
+  const filteredUsers = users.filter((user: any) =>
     user.wallet_address?.toLowerCase().includes(search.toLowerCase()) ||
+    user.walletAddress?.toLowerCase().includes(search.toLowerCase()) ||
     user.email?.toLowerCase().includes(search.toLowerCase()) ||
-    user.name?.toLowerCase().includes(search.toLowerCase())
-  ) || []
+    user.name?.toLowerCase().includes(search.toLowerCase()) ||
+    user.username?.toLowerCase().includes(search.toLowerCase())
+  )
 
   const handleSuspendUser = async (userId: string, currentStatus: string) => {
     console.log('Suspend button clicked!', { userId, currentStatus })
@@ -72,14 +76,14 @@ export default function AdminUsers() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-blue-600">{users?.length || 0}</div>
+              <div className="text-2xl font-bold text-blue-600">{users.length}</div>
               <div className="text-gray-600">Total Users</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-green-600">
-                {users?.filter(u => u.role_name === 'super_admin').length || 0}
+                {users.filter((u: any) => u.role_name === 'super_admin' || u.role === 'super_admin').length}
               </div>
               <div className="text-gray-600">Super Admins</div>
             </CardContent>
@@ -87,7 +91,7 @@ export default function AdminUsers() {
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-purple-600">
-                {users?.filter(u => u.role_name === 'agent').length || 0}
+                {users.filter((u: any) => u.role_name === 'agent' || u.role === 'agent').length}
               </div>
               <div className="text-gray-600">Agents</div>
             </CardContent>
@@ -95,7 +99,7 @@ export default function AdminUsers() {
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-orange-600">
-                {users?.filter(u => u.role_name === 'user').length || 0}
+                {users.filter((u: any) => u.role_name === 'user' || u.role === 'user').length}
               </div>
               <div className="text-gray-600">Regular Users</div>
             </CardContent>
@@ -142,21 +146,18 @@ export default function AdminUsers() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
+                  {filteredUsers.map((user: any) => (
                     <tr key={user.id} className="border-b">
-                      <td className="py-3 font-mono text-sm">{user.wallet_address}</td>
+                      <td className="py-3 font-mono text-sm">{user.walletAddress || user.wallet_address}</td>
                       <td className="py-3">
                         <div>
-                          {user.name && <div className="font-medium">{user.name}</div>}
+                          {(user.username || user.name) && <div className="font-medium">{user.username || user.name}</div>}
                           {user.email && <div className="text-sm text-gray-600">{user.email}</div>}
                         </div>
                       </td>
                       <td className="py-3">
-                        <Badge variant={
-                          user.role_name === 'super_admin' ? 'default' : 
-                          user.role_name === 'agent' ? 'secondary' : 'outline'
-                        }>
-                          {user.role_name || 'user'}
+                        <Badge variant="outline">
+                          user
                         </Badge>
                       </td>
                       <td className="py-3">
@@ -164,9 +165,9 @@ export default function AdminUsers() {
                           {user.status || 'active'}
                         </Badge>
                       </td>
-                      <td className="py-3">{user.domain_count || 0}</td>
+                      <td className="py-3">0</td>
                       <td className="py-3 text-gray-600">
-                        {formatTimeAgo(user.joined_at)}
+                        {formatTimeAgo(user.createdAt || user.joined_at || user.created_at)}
                       </td>
                       <td className="py-3">
                         <div className="flex gap-2">

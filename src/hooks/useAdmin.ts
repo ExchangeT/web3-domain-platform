@@ -7,7 +7,7 @@ export function useAdminDashboard() {
     queryKey: ['admin', 'dashboard'],
     queryFn: async () => {
       const response = await apiClient.admin.getDashboard()
-      return response.data
+      return response.data.data
     },
     retry: 1,
     staleTime: 30000, // 30 seconds
@@ -19,7 +19,7 @@ export function useAdminUsers(params?: { limit?: number; offset?: number; search
     queryKey: ['admin', 'users', params],
     queryFn: async () => {
       const response = await apiClient.admin.getUsers(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -29,7 +29,7 @@ export function useAdminDomains(params?: { limit?: number; offset?: number; sear
     queryKey: ['admin', 'domains', params],
     queryFn: async () => {
       const response = await apiClient.admin.getDomains(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -39,7 +39,7 @@ export function useAdminTransactions(params?: { limit?: number; offset?: number;
     queryKey: ['admin', 'transactions', params],
     queryFn: async () => {
       const response = await apiClient.admin.getTransactions(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -49,7 +49,7 @@ export function useAdminExtensions() {
     queryKey: ['admin', 'extensions'],
     queryFn: async () => {
       const response = await apiClient.admin.getExtensions()
-      return response.data || []
+      return response.data.data || []
     },
   })
 }
@@ -59,7 +59,7 @@ export function useAdminSupport(params?: { limit?: number; offset?: number; stat
     queryKey: ['admin', 'support', params],
     queryFn: async () => {
       const response = await apiClient.admin.getSupport(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -121,7 +121,7 @@ export function useDomainAnalytics(timeRange?: '7d' | '30d' | '90d' | '1y') {
     queryKey: ['admin', 'analytics', 'domains', timeRange],
     queryFn: async () => {
       const response = await apiClient.admin.getDomainAnalytics(timeRange)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -131,7 +131,7 @@ export function useRevenueAnalytics(timeRange?: '7d' | '30d' | '90d' | '1y') {
     queryKey: ['admin', 'analytics', 'revenue', timeRange],
     queryFn: async () => {
       const response = await apiClient.admin.getRevenueAnalytics(timeRange)
-      return response.data
+      return response.data.data
     },
   })
 }

@@ -45,6 +45,7 @@ export default function TransactionsPage() {
           <CardContent className="p-8 text-center">
             <h2 className="text-xl font-semibold mb-2">Connect Your Wallet</h2>
             <p className="text-gray-600 mb-4">Please connect your wallet to view transactions</p>
+            {/* @ts-expect-error - Web3Modal custom element */}
             <w3m-button />
           </CardContent>
         </Card>
